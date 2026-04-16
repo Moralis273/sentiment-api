@@ -20,11 +20,11 @@ class InferenceService():
           score=round(float(result['score']),3)
           t2=time.perf_counter()
           if score<self.threshold:
-               label='neutra l'
-          dt=(t2-t1)*1000
-          logger.info("Prediction completed:: request_id=%s label-%s score=%.3f proccesing_time_ms=%.3f",request_id,label,score,dt)
+               label='neutral'
+          dt=round((t2-t1)*1000,3)
+          logger.info("Prediction completed:: request_id=%s label=%s score=%.3f processing_time_ms=%.3f",request_id,label,score,dt)
           return {"text":text,
                   "label":label,
                   "score":score,
-                  "uuid":request_id,
+                  "request_id":request_id,
                   "processing_time_ms":dt}

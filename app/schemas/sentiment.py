@@ -8,5 +8,5 @@ class PredictResponse(BaseModel):
      text: str
      label: str
      score: float
-     uuid: str
+     request_id: str
      processing_time_ms: float
