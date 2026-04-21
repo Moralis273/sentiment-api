@@ -3,6 +3,8 @@ from app.services.inference import InferenceService
 from app.schemas.sentiment import PredictRequest,PredictResponse
 import logging
 from app.repositories.predictions import save_predictions
+from app.database import get_conn
+
 
 logging.basicConfig(level=logging.INFO)
 logger=logging.getLogger(__name__)
@@ -16,7 +18,19 @@ def root():
 
 @app.get("/health")
 def health():
-     return {"status":"ok"}
+     try:
+          conn=get_conn()
+          curr=conn.cursor()
+          query="""SELECT 1;"""
+          curr.execute(query)
+          curr.close()
+          conn.close()
+          return {"status":"ok",
+               "database":"ok"}
+     except Exception:
+          logger.exception('Database connection is Failed')
+          return {"status":"degraded",
+                     "database":"error"}
 
 @app.post("/predict",response_model=PredictResponse)
 def predict(request:PredictRequest):
@@ -32,5 +46,6 @@ def predict(request:PredictRequest):
           logger.exception("Failed to save prediction to database: request_id=%s",   result["request_id"])
      return result
      
+
 
 #uvicorn app.main:app --reload
